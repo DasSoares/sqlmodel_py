@@ -1,7 +1,6 @@
 from sqlmodel import select, Session
 from mymodel.src.db.connection import engine as eg #, Session
 from mymodel.src.db.models import Author
-from mymodel.src.db.models import Book
 
 
 class AuthorDaos:
@@ -19,15 +18,16 @@ class AuthorDaos:
         with Session(self.engine) as session:
             statement = select(Author).where(Author.id == author_id)
             return session.exec(statement).one_or_none()
-            if author:
-                return author, author.books
-            return
 
-    def update_author(self, author_id: int, name: str):
+    def update_author(self, author_id: int, name: str = None, email: str = None):
+        if not name and not email:
+            raise Exception("Altere apenas um dos campos 'name' ou 'email'")
+        
         with Session(self.engine) as session:
             author = session.get(Author, author_id)
             if author:
-                author.name = name
+                if name: author.name = name
+                if email: author.email = email
                 session.add(author)
                 session.commit()
                 session.refresh(author)
