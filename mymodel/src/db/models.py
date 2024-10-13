@@ -8,7 +8,7 @@ class Author(SQLModel, table=True):
     name: str = Field(max_length=50)
     email: str = Field(max_length=100)
 
-    books: list["Book"] = Relationship(back_populates="author")
+    books: list["Book"] = Relationship(back_populates="author", cascade_delete=True)
 
 
 class Book(SQLModel, table=True):
